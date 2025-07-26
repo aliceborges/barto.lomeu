@@ -1,0 +1,12 @@
+[server]
+enableStaticServing = true
+ [[theme.fontFaces]]
+ family="Bitcount"
+ url="https://fonts.gstatic.com/s/bitcount/v1/ijwis53kQsE1Y5J-lI1wubXnlQH-1-E1LhaU1dJRZZaHU0slfybi9GQwiTv06bjtugLjdPqK3d9XKDqRc2jrJlCSaTPR.woff2"
+ style="normal"
+ weight="200 1000"
+[theme]
+base="dark"
+headingFont="Bitcount"
+baseFontSize=16
+linkColor="#4025B8"
