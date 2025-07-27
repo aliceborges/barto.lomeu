@@ -15,7 +15,7 @@ BASE_URL = os.getenv("BASE_URL", "http://localhost/")
 st.set_page_config(
     page_title="barto.lomeu",
     page_icon="front/assets/barto.png",
-    layout="wide"
+    layout="centered"
 )
 
 with st.form("create_short_url", clear_on_submit=True, enter_to_submit=True, border=True, width="stretch", height="content"):
@@ -24,8 +24,8 @@ with st.form("create_short_url", clear_on_submit=True, enter_to_submit=True, bor
         st.image("front/assets/barto.png", width=50)
     with col2:
         st.title("barto.lomeu")
-    long_url = st.text_input("Url*")
-    code = st.text_input("Código")
+    long_url = st.text_input("Url*", help="Url do site que será encurtado", placeholder="https://codecon.dev/")
+    code = st.text_input("Código", help="Código que será utilizado para encurtar a URL. Caso não seja informado, será gerado um aleatório de seis dígitos.", placeholder="CODECON")
     st.text("*Preenchimento Obrigatório")
     submitted = st.form_submit_button("Enviar")
 
