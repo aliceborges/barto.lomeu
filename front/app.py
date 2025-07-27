@@ -12,8 +12,14 @@ load_dotenv()
 
 BASE_URL = os.getenv("BASE_URL", "http://localhost/")
 
+st.set_page_config(
+    page_title="barto.lomeu",
+    page_icon="front/assets/barto.png",
+    layout="wide"
+)
+
 with st.form("create_short_url", clear_on_submit=True, enter_to_submit=True, border=True, width="stretch", height="content"):
-    col1, col2 = st.columns([0.1, 0.9])
+    col1, col2 = st.columns([1, 9])
     with col1:
         st.image("front/assets/barto.png", width=50)
     with col2:
