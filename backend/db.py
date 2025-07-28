@@ -18,7 +18,7 @@ def get_db():
         CREATE TABLE IF NOT EXISTS click_history (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             url_id INTEGER NOT NULL,
-            location json
+            location json,
             timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY(url_id) REFERENCES urls(id)
         )

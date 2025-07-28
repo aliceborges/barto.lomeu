@@ -24,16 +24,14 @@ def create_short_url(long_url, desired_code=None):
     conn.close()
     return {"code": code}, 201
 
-def get_long_url_and_clicks(code) -> tuple[Any, Any] | None:
-    if not code:
-        return None
+def get_long_url_and_clicks(code) -> tuple[Any, Any, Any] | None:
     conn = get_db()
     data = url_model.find_by_code(conn, code)
     if not data:
         return None
-    long_url, clicks = data
+    url_id, long_url, clicks = data
     conn.close()
-    return long_url, clicks
+    return url_id, long_url, clicks
 
 def update_clicks(code, clicks):
     conn = get_db()
@@ -42,11 +40,13 @@ def update_clicks(code, clicks):
 
 def update_history(code, ip):
     conn = get_db()
-    url_id = url_model.find_by_code(conn, code)
-    if not url_id:
+    data = url_model.find_by_code(conn, code)
+    print("Data retrieved for code:", data)
+    if not data:
         conn.close()
         return
-    url_model.insert_click_history(conn, url_id[0], ip)
+    url_id, _, _ = data
+    url_model.insert_click_history(conn, url_id, ip)
     conn.close()
 
 def get_stats(code):
@@ -55,7 +55,7 @@ def get_stats(code):
     conn.close()
     if not data:
         return None
-    long_url, clicks = data
+    url_id, long_url, clicks = data
     return {"code": code, "long_url": long_url, "clicks": clicks}
 
 def get_all_stats():
@@ -63,3 +63,19 @@ def get_all_stats():
     rows = url_model.find_all(conn)
     conn.close()
     return [{"code": code, "long_url": long_url, "clicks": clicks} for long_url, code, clicks in rows]
+
+def get_history(code):
+    conn = get_db()
+    history = url_model.get_history(conn, code)
+    conn.close()
+    if not history:
+        return []
+    return [{"location": location, "timestamp": timestamp} for location, timestamp in history]
+
+def get_all_history():
+    conn = get_db()
+    history = url_model.get_all_history(conn)
+    conn.close()
+    if not history:
+        return []
+    return [{"code": code, "location": location, "timestamp": timestamp} for code, location, timestamp in history]
