@@ -1,14 +1,16 @@
+from typing import Any
+
 import validators
-from ..db import get_db
-from ..utils.generator import generate_code
-from ..models import url_model
+
+from backend.db import get_db
+from backend.models import url_model
+from backend.utils.generator import generate_code
+
 
 def create_short_url(long_url, desired_code=None):
     if not validators.url(long_url):
         return {"error": "The informed URL is not valid."}, 400
-
     conn = get_db()
-
     if desired_code:
         if url_model.code_exists(conn, desired_code):
             return {"error": "The code is already in use."}, 409
@@ -22,15 +24,30 @@ def create_short_url(long_url, desired_code=None):
     conn.close()
     return {"code": code}, 201
 
-def get_long_url(code):
+def get_long_url_and_clicks(code) -> tuple[Any, Any] | None:
+    if not code:
+        return None
     conn = get_db()
     data = url_model.find_by_code(conn, code)
     if not data:
         return None
     long_url, clicks = data
-    url_model.update_clicks(conn, code, clicks + 1)
     conn.close()
-    return long_url
+    return long_url, clicks
+
+def update_clicks(code, clicks):
+    conn = get_db()
+    url_model.update_clicks(conn, code, clicks)
+    conn.close()
+
+def update_history(code, ip):
+    conn = get_db()
+    url_id = url_model.find_by_code(conn, code)
+    if not url_id:
+        conn.close()
+        return
+    url_model.insert_click_history(conn, url_id[0], ip)
+    conn.close()
 
 def get_stats(code):
     conn = get_db()

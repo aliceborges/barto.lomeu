@@ -71,3 +71,5 @@ df = pd.DataFrame(dataframe_urls)
 dynamic_filters = DynamicFilters(df=df, filters=['Código', 'Url'], filters_name='Filtros')
 dynamic_filters.display_filters(location='sidebar')
 dynamic_filters.display_df()
+
+# st.line_chart(data=None, *, x=None, y=None, x_label=None, y_label=None, color=None, width=None, height=None, use_container_width=True)

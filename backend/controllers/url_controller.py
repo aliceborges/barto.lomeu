@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify, redirect
-from ..services import url_service
+
+from backend.services import url_service
 
 url_bp = Blueprint('urls', __name__)
 
@@ -15,7 +16,11 @@ def shorten_url():
 
 @url_bp.route('/<code>', methods=['GET'])
 def access_url(code):
-    long_url = url_service.get_long_url(code)
+    long_url, clicks = url_service.get_long_url_and_clicks(code)
+    url_service.update_clicks(code, clicks + 1 if clicks is not None else 1)
+    if not long_url:
+        return jsonify({"error": "This code isn't registered"}), 404
+    url_service.update_history(code, request.remote_addr)
     if not long_url:
         return jsonify({"error": "This code isn't registered"}), 404
     return redirect(long_url)
